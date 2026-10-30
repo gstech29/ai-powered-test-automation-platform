@@ -1,0 +1,92 @@
+# Fictional API used for the local demonstration. All data is synthetic.
+openapi: 3.0.3
+info:
+  title: Sample Inventory API (fictional)
+  version: 1.0.0
+servers:
+  # Generated tests never use this; they read API_BASE_URL instead.
+  - url: https://api.example.invalid
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Liveness check
+      responses:
+        "200":
+          description: Service is up
+
+  /items:
+    get:
+      operationId: listItems
+      summary: List items
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 2
+        - name: category
+          in: query
+          required: false
+          description: Optional and has no example, so the generator omits it.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A list of items
+        "400":
+          description: Invalid query parameter
+    post:
+      # Reported as skipped: only GET is supported in this milestone.
+      operationId: createItem
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "201":
+          description: Created
+
+  /items/{item_id}:
+    parameters:
+      - name: item_id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: item-999
+    get:
+      operationId: getItem
+      summary: Fetch one item
+      parameters:
+        # Operation-level override of the path-level parameter above.
+        - name: item_id
+          in: path
+          required: true
+          example: item-001
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The item
+        "404":
+          description: No such item
+
+  /reports/summary:
+    get:
+      # Reported as skipped: authentication is not supported yet.
+      operationId: getReportSummary
+      security:
+        - apiKeyAuth: []
+      responses:
+        "200":
+          description: A summary report
+
+components:
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key

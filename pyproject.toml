@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qa-platform"
+dynamic = ["version"]
+description = "Deterministic OpenAPI-to-Pytest API test generator (first milestone of an AI-powered test automation platform)."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "PyYAML>=6.0",
+    "requests>=2.31",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.scripts]
+qa-platform = "qa_platform.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "qa_platform.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+# Only the project's own tests. generated_tests/ needs a running API and is
+# run explicitly (see README).
+testpaths = ["tests"]
+addopts = "-ra"
